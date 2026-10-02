@@ -56,73 +56,82 @@ By utilizing local browser engines, pre-compiled road geometry, custom TopoJSON 
 
 ## 🏗️ Architectural Design & Offline Ledger
 
-PathSuchak follows a **three-tier offline-resilient architecture** to isolate browser runtime failures from cloud-sync states:
+PathSuchak uses an offline-isolated, three-tier tactical system architecture:
 
-┌─────────────────────────────────────────────────────────────┐
-│ CLIENT-SIDE VIEW LAYER │
-│ [React Components] ◄───► [Tactical Map Canvas] │
-└──────────────┬──────────────────────────────▲───────────────┘
-│ (Read/Write) │ (Sync States)
-┌──────────────▼──────────────────────────────┴───────────────┐
-│ PERSISTENT LOCAL DATA HUB │
-│ [IndexedDB Sync Queue] ◄───► [Cache Storage API] │
-│ (Transactions & Logs) (Vector Map Tiles) │
-└──────────────┬──────────────────────────────────────────────┘
-│ (Dynamic Online Check)
-▼
-┌─────────────────────────────────────────────────────────────┐
-│ CLOUD INTEGRATION LAYER │
-│ [Firebase Firestore / Auth] │
-└─────────────────────────────────────────────────────────────┘
+```text
+┌──────────────────────────────────────────────────────┐
+│             LAYER 1: CLIENT PRESENTATION             │
+├──────────────────────────┬───────────────────────────┤
+│    [ React UI / HUD ]    │  [ Tactical Map Canvas ]  │
+│  • Turn-by-turn routing  │  • Leaflet engine         │
+│  • Voice navigation      │  • IMD Doppler overlay    │
+└────────────┬─────────────┴─────────────▲─────────────┘
+             │ (Local R/W)               │ (Cache Read)
+             ▼                           │
+┌────────────────────────────────────────┴─────────────┐
+│          LAYER 2: PERSISTENT LOCAL DATA HUB          │
+├──────────────────────────┬───────────────────────────┤
+│ [ IndexedDB Sync Queue ] │   [ Cache Storage API ]   │
+│ • Incident reports       │ • Offline vector tiles    │
+│ • SOS distress beacons   │ • TopoJSON boundaries     │
+│ • Custom route logs      │ • Static asset packages   │
+└──────────────────────────┬───────────────────────────┘
+                           │
+                           │ Dynamic Heartbeat Check
+                           │ (Pushes when online)
+                           ▼
+┌──────────────────────────────────────────────────────┐
+│           LAYER 3: CLOUD INTEGRATION HUB             │
+├──────────────────────────┬───────────────────────────┤
+│  [ Firebase Firestore ]  │    [ Firebase Auth ]      │
+│  • Central hazard ledger │    • Device recognition   │
+│  • Dispatch broadcast    │    • Encrypted profile    │
+└──────────────────────────┴───────────────────────────┘
 
 1.  **State Management:** Built on highly-performant React Context Provider engines managing independent data scopes (`AppContext`, `AuthContext`, `LanguageContext`).
 2.  **Ticker Engine:** Custom, CPU-friendly frame tickers running on browser native `requestAnimationFrame` to manage progress renders, minimizing main-thread blocking during critical data imports.
 
 ---
 
-## 📂 Codebase Directory Layout
-PathSuchak-nav/
-├── .aistudio/ # AI Studio workspace orchestration configurations
-├── assets/ # Vector layouts, design schematics, and branding assets
-├── public/ # Static directory (Favicons, static JSON overlays, Offline assets)
-│ ├── data/ # India TopoJSON, emergency listings, pre-cached routes
-│ └── favicon.svg # Custom tactical navigational beacon icon
-├── src/ # Monolithic TypeScript Source Files
-│ ├── components/ # Modularized UI Components
-│ │ ├── ActiveDrivingHUD.tsx # Real-time driving metrics & navigation HUD
-│ │ ├── AuthModal.tsx # Offline-aware authentication dialog
-│ │ ├── BottomNav.tsx # Device-responsive primary application nav
-│ │ ├── CycloneWarningSection.tsx # Doppler weather data representation
-│ │ ├── EmergencySOS.tsx # Guarded Distress Beacon SOS panel
-│ │ ├── ErrorBoundary.tsx # Crash containment and user-rescue view
-│ │ ├── IncidentReporting.tsx # Citizen hazard log form & local manager
-│ │ ├── IntroScreen.tsx # Dependency-free, pure CSS cinematic splash screen
-│ │ └── ResilientNavigation.tsx # Primary offline routing control dashboard
-│ ├── context/ # Context Providers (State Orchestration Core)
-│ │ ├── AppContext.tsx # Central ledger, GPS, and sync operations
-│ │ ├── AuthContext.tsx # Session handling & device recognition
-│ │ └── LanguageContext.tsx # Multi-lingual dictionary mappings
-│ ├── services/ # Integrations & GIS Calculators
-│ │ ├── firebase.ts # Firestore secure listeners and transaction sweeps
-│ │ ├── gps-geojson.service.ts # Bearing, snap-to-route, and coordinate calculations
-│ │ ├── real-location.service.ts # Native Geolocation API wrappers with error fallbacks
-│ │ ├── road-routing.service.ts # OSRM highway pathing calculus
-│ │ ├── storage.ts # Low-level IndexedDB database driver API
-│ │ └── voice-guidance.service.ts # Offline SpeechSynthesis audio turn navigator
-│ ├── types/ # System-wide strongly-typed schemas
-│ ├── App.tsx # Root component orchestrator
-│ ├── index.css # Tailwind v4 configuration directives
-│ └── main.tsx # DOM mounting and bundle hydration entrypoint
-├── firebase-applet-config.json # Firebase security tokens
-├── firebase-blueprint.json # Firestore cloud schema definitions
-├── firestore.rules # Granular Firestore security access rules
-├── index.html # Entry points and early pre-hydration templates
-├── package.json # Direct and peer build dependencies
-├── tailwind.config.js # Global stylesheet adjustments
-├── tsconfig.json # TypeScript compiler rules
-└── vite.config.ts # Vite asset, plugin, and production bundler configuration 
+Codebase Directory Layout
 
----
+PathSuchak-nav/
+├── assets/                       # UI assets and design schematics
+├── public/                       # Static public assets
+│   ├── data/                     # India TopoJSON and offline datasets
+│   └── favicon.svg               # Tactical beacon SVG icon
+├── src/                          # TypeScript source root
+│   ├── components/               # Modular UI components
+│   │   ├── ActiveDrivingHUD.tsx  # Turn-by-turn driving HUD
+│   │   ├── AuthModal.tsx         # Offline-aware login modal
+│   │   ├── BottomNav.tsx         # Mobile navigation bar
+│   │   ├── CycloneWarning.tsx    # Doppler radar & storm monitor
+│   │   ├── EmergencySOS.tsx      # Distress beacon transponder
+│   │   ├── ErrorBoundary.tsx     # Graceful crash handling
+│   │   ├── IncidentReport.tsx    # Citizen hazard logging form
+│   │   ├── IntroScreen.tsx       # Zero-dependency splash intro
+│   │   └── ResilientNav.tsx      # Primary routing dashboard
+│   ├── context/                  # React state providers
+│   │   ├── AppContext.tsx        # Central ledger, GPS & sync
+│   │   ├── AuthContext.tsx       # Auth & session state
+│   │   └── LanguageContext.tsx   # 15+ Indian languages dictionary
+│   ├── services/                 # GIS & cloud services
+│   │   ├── firebase.ts           # Firestore sync sweeps
+│   │   ├── gps-geojson.ts        # Bearing & route snapping math
+│   │   ├── real-location.ts      # Native Geolocation API service
+│   │   ├── road-routing.ts       # OSRM pathing algorithms
+│   │   ├── storage.ts            # IndexedDB low-level driver
+│   │   └── voice-guidance.ts     # Offline SpeechSynthesis engine
+│   ├── types/                    # Shared TypeScript interfaces
+│   ├── App.tsx                   # Primary view coordinator
+│   ├── index.css                 # Tailwind CSS v4 styling
+│   └── main.tsx                  # Hydration entrypoint
+├── firebase-applet-config.json   # Firebase credentials
+├── firebase-blueprint.json       # Firestore database schema
+├── firestore.rules               # Security rules for collections
+├── index.html                    # Single-page HTML shell
+├── package.json                  # Dependencies & build scripts
+└── vite.config.ts                # Vite bundler configuration
 
 ---
 
