@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { motion } from 'motion/react';
 
 interface IntroScreenProps {
   onComplete: () => void;
@@ -8,14 +7,13 @@ interface IntroScreenProps {
 
 export const IntroScreen: React.FC<IntroScreenProps> = ({ onComplete }) => {
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     try {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
       setShouldReduceMotion(mediaQuery.matches);
-      const listener = (e: MediaQueryListEvent) => setShouldReduceMotion(e.matches);
-      mediaQuery.addEventListener('change', listener);
-      return () => mediaQuery.removeEventListener('change', listener);
     } catch {
       setShouldReduceMotion(false);
     }
@@ -46,11 +44,11 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onComplete }) => {
 
   // Frame ticker loop using requestAnimationFrame for optimal buttery smooth 60fps performance
   useEffect(() => {
-    let isMounted = true;
+    let isMountedTick = true;
     const startTime = performance.now();
 
     const tick = (now: number) => {
-      if (!isMounted) return;
+      if (!isMountedTick) return;
       const progress = now - startTime;
       setElapsed(progress);
 
@@ -63,7 +61,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onComplete }) => {
 
     requestAnimationFrame(tick);
     return () => {
-      isMounted = false;
+      isMountedTick = false;
     };
   }, [totalDuration]);
 
@@ -100,13 +98,12 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onComplete }) => {
   }, [onComplete]);
 
   return (
-    <motion.div
+    <div
       data-intro-screen="true"
-      initial={{ opacity: 1 }}
-      animate={{ opacity: isExiting ? 0 : 1 }}
-      transition={{ duration: 0.45, ease: 'easeOut' }}
       onClick={handleSkip}
-      className="fixed inset-0 z-[9999] overflow-hidden select-none flex flex-col justify-between items-center p-4 sm:p-6 bg-[#040810] text-white cursor-pointer font-sans"
+      className={`fixed inset-0 z-[9999] overflow-hidden select-none flex flex-col justify-between items-center p-4 sm:p-6 bg-[#040810] text-white cursor-pointer font-sans transition-opacity duration-300 ease-out ${
+        isExiting ? 'opacity-0 pointer-events-none' : 'opacity-100'
+      }`}
     >
       {/* Background Topographic Matrix Grid */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.22] mix-blend-screen">
@@ -129,33 +126,35 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onComplete }) => {
 
       {/* Main Holographic Screen Area */}
       <div className="relative z-10 w-full flex-1 max-h-[42vh] flex items-center justify-center overflow-hidden my-auto">
-        <div className="relative w-36 h-36 sm:w-40 sm:h-40 flex items-center justify-center">
+        <div className={`relative w-36 h-36 sm:w-40 sm:h-40 flex items-center justify-center transition-all duration-700 transform ${
+          isMounted ? 'scale-100 opacity-100' : 'scale-90 opacity-0'
+        }`}>
           <svg
             viewBox="0 0 100 100"
             className="w-full h-full overflow-visible"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            {/* Concentric rotating neon circles around Logo */}
-            <motion.circle
+            {/* Concentric rotating neon circles around Logo (pure-CSS animations for maximum safety) */}
+            <circle
               cx="50"
               cy="50"
               r="46"
               stroke="rgba(16, 185, 129, 0.3)"
               strokeWidth="1.2"
               strokeDasharray="6 8"
-              animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 12, ease: 'linear' }}
+              className="animate-spin"
+              style={{ animationDuration: '12s', transformOrigin: 'center' }}
             />
-            <motion.circle
+            <circle
               cx="50"
               cy="50"
               r="42"
               stroke="rgba(255, 122, 26, 0.2)"
               strokeWidth="1"
               strokeDasharray="4 6"
-              animate={{ rotate: -360 }}
-              transition={{ repeat: Infinity, duration: 16, ease: 'linear' }}
+              className="animate-spin"
+              style={{ animationDuration: '16s', transformOrigin: 'center', animationDirection: 'reverse' }}
             />
 
             {/* Ambient holographic gradient glow */}
@@ -200,12 +199,11 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onComplete }) => {
       {/* ZONE 2: Text Blocks & Cinematic Branding */}
       <div className="relative z-20 w-full flex flex-col items-center justify-center text-center px-4 py-2 my-auto min-h-[140px] max-w-xl">
         
-        {/* Sliding Wordmark with beautiful spacing */}
-        <motion.div
-          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: 'easeOut' }}
-          className="flex items-center justify-center tracking-tight mb-2 select-none"
+        {/* Wordmark with beautiful CSS transitions */}
+        <div
+          className={`flex items-center justify-center tracking-tight mb-2 select-none transition-all duration-700 transform ${
+            isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          }`}
           style={{
             fontSize: 'clamp(38px, 10vw, 60px)',
             fontWeight: 800,
@@ -214,31 +212,29 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onComplete }) => {
         >
           <span className="text-white">Path</span>
           <span className="text-primary" style={{ textShadow: '0 0 15px rgba(255,122,26,0.5)' }}>Suchak</span>
-        </motion.div>
+        </div>
 
         {/* Subtitle / Tagline Block */}
         <div className="flex flex-col items-center justify-center gap-1.5 max-w-[340px] sm:max-w-md mx-auto">
           {/* Animated Line 1 */}
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: shouldReduceMotion ? 0 : 0.3 }}
-            className="text-slate-200 font-sans tracking-wide text-sm sm:text-base font-medium"
+          <div
+            className={`text-slate-200 font-sans tracking-wide text-sm sm:text-base font-medium transition-all duration-700 delay-200 transform ${
+              isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+            }`}
             style={{ textShadow: '0 2px 6px rgba(0,0,0,0.6)' }}
           >
             Turn Uncertainty Into Awareness,
-          </motion.div>
+          </div>
 
           {/* Animated Line 2 */}
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: shouldReduceMotion ? 0 : 0.5 }}
-            className="text-slate-300 font-sans tracking-wide text-sm sm:text-base font-medium"
+          <div
+            className={`text-slate-300 font-sans tracking-wide text-sm sm:text-base font-medium transition-all duration-700 delay-400 transform ${
+              isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+            }`}
             style={{ textShadow: '0 2px 6px rgba(0,0,0,0.6)' }}
           >
             Because Every Path Has a Story.
-          </motion.div>
+          </div>
         </div>
       </div>
 
@@ -255,6 +251,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onComplete }) => {
           />
         </div>
       </footer>
-    </motion.div>
+    </div>
   );
 };
