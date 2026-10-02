@@ -124,6 +124,8 @@ PathSuchak-nav/
 
 ---
 
+---
+
 ## 🔧 Local Setup & Configuration
 
 ### 💻 System Requirements
@@ -138,6 +140,8 @@ PathSuchak-nav/
 git clone https://github.com/arnab-verse/PathSuchak-nav.git
 cd PathSuchak-nav
 
+Install Node Packages
+Ensure you run a clean installation of all dependency lock-files:
 npm ci
 
 Environmental Configurations
@@ -149,3 +153,7 @@ VITE_FIREBASE_STORAGE_BUCKET=dotted-elysium-6v9wh.firebasestorage.app
 VITE_FIREBASE_MESSAGING_SENDER_ID=1016759213728
 VITE_FIREBASE_APP_ID=1:1016759213728:web:ea929ba2a447f64ecdb3c5
 
+Security Posture & Rules
+To lock down write access in critical operations, deploy the security definitions in firestore.rules.
+
+Distributed under the MIT License. See LICENSE for more information.
