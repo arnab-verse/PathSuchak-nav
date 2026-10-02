@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#0b0f15"/>
+  <rect x="2" y="2" width="60" height="60" rx="14" stroke="#ff7a1a" stroke-width="2" stroke-opacity="0.3"/>
+  <!-- Tactical Radar Rings -->
+  <circle cx="32" cy="32" r="24" stroke="#ff7a1a" stroke-width="1.5" stroke-opacity="0.2" stroke-dasharray="3 3"/>
+  <circle cx="32" cy="32" r="14" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.4"/>
+  <!-- Compass / Beacon Pointer -->
+  <path d="M32 10L37 28L32 25L27 28L32 10Z" fill="#ff7a1a"/>
+  <path d="M32 54L27 36L32 39L37 36L32 54Z" fill="#64748b"/>
+  <!-- Center Core -->
+  <circle cx="32" cy="32" r="4" fill="#ffffff"/>
+  <circle cx="32" cy="32" r="7" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.6"/>
+  <!-- Crosshairs -->
+  <line x1="12" y1="32" x2="20" y2="32" stroke="#ff7a1a" stroke-width="2" stroke-linecap="round"/>
+  <line x1="44" y1="32" x2="52" y2="32" stroke="#ff7a1a" stroke-width="2" stroke-linecap="round"/>
+</svg>

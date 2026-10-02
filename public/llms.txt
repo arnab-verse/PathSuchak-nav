@@ -1,0 +1,25 @@
+# PathSuchak - Field Navigation & Emergency Dispatch Platform
+> Turn Uncertainty Into Awareness, Because Every Path Has a Story. Resilient mission-critical offline logistics, tactical GPS road navigation, IMD cyclone tracking, and satellite distress operations.
+
+## Overview
+PathSuchak is a field-operational Progressive Web Application (PWA) engineered for extreme conditions, high-altitude mountain passes, coastal cyclone corridors, and zero-connectivity environments across the Republic of India.
+
+## Key Operational Modules
+- **Resilient Road Navigation**: Turn-by-turn road routing via real OSRM road geometry engine with offline vector fallback corridors and dead-reckoning compass headings.
+- **IMD Cyclone Early Warning Radar**: Real-time atmospheric isobaric radar, eye tracking, wind-speed radius contours, Saffir-Simpson intensity categorization, and coastal disaster relief shelter routing.
+- **Emergency Services Directory**: Real-time proximity locator for tertiary hospitals, police stations, NDRF battalion bases, and fire brigades with one-touch 112/108 emergency speed-dialing.
+- **Satellite Distress Transponder (SOS)**: Guarded 2-second hold emergency burst beacon transmitting live GPS telemetry, altitude, heading, and medical status over satellite and local emergency radio channels (VHF CH 12, Air Medical 243.000 MHz).
+- **Offline Sync Center**: Cryptographically hashed offline queues with IndexedDB storage, auto-retry exponential backoff, and conflict resolution for field incident reports.
+- **Pan-Indian Localization**: Native interface support for 15+ official Indian languages with live speech telemetry in Hindi, Bengali, Telugu, Marathi, Tamil, Urdu, and more.
+
+## Architecture Specifications
+- **Client Frontend**: React 19, TypeScript, Tailwind CSS, Leaflet GIS Engine.
+- **Offline Capabilities**: Full offline caching, vector geometry fallback, service worker caching, IndexedDB transaction ledger.
+- **Coordinates & Spatial Reference**: WGS84 Geographic Coordinate System with high-accuracy GNSS hardware integration and simulated mountain route playback.
+
+## Emergency Contact Helplines
+- National Emergency Helpline: 112
+- Disaster Management Authority (NDMA): 1078
+- Ambulance & Medical Emergency: 108
+- Fire Emergency Services: 101
+- National Highway Patrol: 1073

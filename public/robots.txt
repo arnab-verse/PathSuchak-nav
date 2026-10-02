@@ -1,0 +1,27 @@
+# Tactical Navigation & Resilient Logistics Dispatch
+# Search Engine and AI Crawler Policy
+
+User-agent: *
+Allow: /
+
+# Dedicated AI and Machine Learning indexing allowed
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Canonical sitemap location
+Sitemap: /sitemap.xml

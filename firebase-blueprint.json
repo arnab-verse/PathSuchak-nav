@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Tactical operator user profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "callsign": { "type": "string" },
+        "unit": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "lastLoginAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Incident": {
+      "title": "Incident",
+      "description": "Hazard and road blockage incident logged by an operator",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "severity": { "type": "string" },
+        "district_road_segment": { "type": "string" },
+        "description": { "type": "string" },
+        "observation_time": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "accuracy_meters": { "type": "number" },
+        "altitude_meters": { "type": "number" },
+        "sync_status": { "type": "string" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["id", "userId", "title", "latitude", "longitude"]
+    },
+    "Waypoint": {
+      "title": "Waypoint",
+      "description": "Tactical pinned location or route waypoint",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "notes": { "type": "string" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["id", "userId", "name", "latitude", "longitude"]
+    },
+    "SyncLog": {
+      "title": "SyncLog",
+      "description": "Telemetry and sync transaction history per operator",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "item_type": { "type": "string" },
+        "operation": { "type": "string" },
+        "status": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["id", "userId", "item_type", "status"]
+    },
+    "DownloadedRoute": {
+      "title": "DownloadedRoute",
+      "description": "Offline route package downloaded by operator",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "destination": { "type": "string" },
+        "distanceKm": { "type": "number" },
+        "estMinutes": { "type": "number" },
+        "tileCount": { "type": "number" },
+        "downloadedAt": { "type": "number" }
+      },
+      "required": ["id", "userId", "name", "destination"]
+    },
+    "RouteLog": {
+      "title": "RouteLog",
+      "description": "GPS breadcrumb route track log recorded by operator",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "totalPoints": { "type": "number" },
+        "lastUpdated": { "type": "number" }
+      },
+      "required": ["userId", "totalPoints", "lastUpdated"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Individual operator user document"
+    },
+    "/users/{userId}/incidents/{incidentId}": {
+      "schema": "Incident",
+      "description": "Per-user incidents and hazard reports"
+    },
+    "/users/{userId}/waypoints/{waypointId}": {
+      "schema": "Waypoint",
+      "description": "Per-user pinned tactical waypoints"
+    },
+    "/users/{userId}/sync_logs/{logId}": {
+      "schema": "SyncLog",
+      "description": "Per-user synchronization transaction records"
+    },
+    "/users/{userId}/downloaded_routes/{routeId}": {
+      "schema": "DownloadedRoute",
+      "description": "Per-user downloaded offline road routes"
+    },
+    "/users/{userId}/route_logs/{logId}": {
+      "schema": "RouteLog",
+      "description": "Per-user GPS travel route log"
+    }
+  }
+}
