@@ -27,7 +27,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ isFirstScreenGate = false })
   const { setCurrentTab, incidents, syncQueue, gpsBreadcrumbs, showToast, theme } = useApp();
   const { t } = useLanguage();
 
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [mode, setMode] = useState<'login' | 'register'>(isFirstScreenGate ? 'register' : 'login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -333,15 +333,38 @@ export const AuthPage: React.FC<AuthPageProps> = ({ isFirstScreenGate = false })
     <div className={`flex flex-col gap-4 max-w-xl mx-auto ${isFirstScreenGate ? 'min-h-screen justify-center py-8 px-3 sm:px-4' : 'pb-10'} animate-fadeIn`}>
       {/* Top Branding (Highlighted for First Screen Gate) */}
       {isFirstScreenGate && (
-        <div className="text-center mb-1 animate-fadeIn">
-          <h1 className="font-bold text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">
-            PathSuchak
-          </h1>
-          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
-            Turn Uncertainty Into Awareness, Because Every Path Has a Story.
-          </p>
-        </div>
-      )}
+          <div className="text-center mb-2 animate-fadeIn flex flex-col items-center">
+            <div className="w-14 h-14 mb-2">
+              <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="32" fill="rgba(255, 122, 26, 0.16)" filter="blur(8px)" />
+                <path
+                  d="M 50 12 L 78 30 L 78 68 L 50 86 L 22 68 L 22 30 Z"
+                  fill="#050a12"
+                  stroke="#ff7a1a"
+                  strokeWidth="2.8"
+                  style={{ filter: 'drop-shadow(0 0 12px rgba(255, 122, 26, 0.8))' }}
+                />
+                <path
+                  d="M 32 68 C 36 56, 44 58, 48 48 C 52 38, 56 42, 64 26"
+                  stroke="#ff7a1a"
+                  strokeWidth="3.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <circle cx="32" cy="68" r="3.2" fill="#ffffff" />
+                <circle cx="48" cy="48" r="2.8" fill="#ff7a1a" />
+                <polygon points="64,22 68,30 60,28" fill="#10b981" />
+                <circle cx="64" cy="26" r="3.2" fill="#10b981" />
+              </svg>
+            </div>
+            <h1 className="font-bold text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight flex items-center justify-center">
+              <span>Path</span><span className="text-primary">Suchak</span>
+            </h1>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
+              Turn Uncertainty Into Awareness, Because Every Path Has a Story.
+            </p>
+          </div>
+        )}
 
       {/* Top Banner */}
       <div className="tactile-card rounded-2xl p-5 relative overflow-hidden border border-primary/40 shadow-2xl">
