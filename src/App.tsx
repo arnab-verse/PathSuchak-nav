@@ -168,6 +168,31 @@ const MainContent: React.FC = () => {
     );
   }
 
+  // FIRST SCREEN AUTH GATE: User must register or log in before accessing the application
+  if (!currentUser) {
+    return (
+      <div 
+        id="app-auth-gate-container"
+        data-theme={theme}
+        className={`flex flex-col min-h-screen font-sans selection:bg-primary/30 selection:text-white transition-colors duration-150 ${
+          theme === 'light'
+            ? 'bg-[#f1f5f9] text-slate-900 theme-light'
+            : theme === 'night-vision'
+            ? 'bg-[#040f07] text-emerald-100 theme-night-vision'
+            : 'bg-[#0a0d14] text-on-surface dark'
+        }`}
+      >
+        <AuthPage isFirstScreenGate={true} />
+        {toastMessage && (
+          <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-[120] px-4 py-2.5 bg-[#171f2c]/95 backdrop-blur-xl border border-primary/50 text-white rounded-xl shadow-2xl flex items-center gap-2 text-xs font-semibold max-w-[90vw] animate-fadeIn">
+            <span className="material-symbols-outlined text-primary text-[18px] shrink-0">info</span>
+            <span>{toastMessage}</span>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div 
       id="app-root-container"
